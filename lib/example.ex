@@ -1,4 +1,5 @@
 defmodule Example do
+  require Integer
   use Application
 
   def start(_type, _args) do
@@ -6,29 +7,22 @@ defmodule Example do
     Supervisor.start_link([], strategy: :one_for_one)
   end
 
+  def even(list), do: for(n <- list, Integer.is_even(n), do: n)
+
   def main do
-    correct = :rand.uniform(11) - 1
-    IO.puts("Correct is #{correct}")
+    grades = [25, 50, 75, 100]
+    new = for n <- grades, do: n + 5
 
-    guess =
-      IO.gets("Guess a number between 0 and 10: ")
-      |> String.trim()
-      |> Integer.parse()
+    IO.inspect(new)
 
-    IO.inspect(guess)
+    new = new ++ [125]
+    new = new ++ [150, 175]
+    final = [5 | new]
 
-    case guess do
-      {result, _} ->
-        IO.puts("Parse successful #{result}")
+    IO.inspect(final)
 
-        if result == correct do
-          IO.puts("You win!")
-        else
-          IO.puts("You loose")
-        end
+    even = final |> even()
 
-      :error ->
-        IO.puts("Something went wrong")
-    end
+    IO.inspect(even)
   end
 end
