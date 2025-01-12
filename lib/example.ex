@@ -1,5 +1,4 @@
 defmodule Example do
-  require Integer
   use Application
 
   def start(_type, _args) do
@@ -7,22 +6,29 @@ defmodule Example do
     Supervisor.start_link([], strategy: :one_for_one)
   end
 
-  def even(list), do: for(n <- list, Integer.is_even(n), do: n)
+  def sum_and_avg(numbers) do
+    sum = Enum.sum(numbers)
+    average = sum / Enum.count(numbers)
+    {sum, average}
+  end
+
+  def print_numbers(numbers), do: numbers |> Enum.join(" ") |> IO.puts()
+
+  def get_numbers_from_user do
+    IO.puts("Enter numbers separated by spaces: ")
+
+    user_input = IO.gets("") |> String.trim()
+
+    String.split(user_input, " ") |> Enum.map(&String.to_integer/1)
+  end
 
   def main do
-    grades = [25, 50, 75, 100]
-    new = for n <- grades, do: n + 5
+    numbers = get_numbers_from_user()
 
-    IO.inspect(new)
+    print_numbers(numbers)
 
-    new = new ++ [125]
-    new = new ++ [150, 175]
-    final = [5 | new]
+    {sum, avg} = sum_and_avg(numbers)
 
-    IO.inspect(final)
-
-    even = final |> even()
-
-    IO.inspect(even)
+    IO.puts("The sum is #{sum}, and the average is #{avg}.")
   end
 end
